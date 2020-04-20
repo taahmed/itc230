@@ -1,0 +1,19 @@
+{
+  "name": "itc230",
+  "version": "1.0.0",
+  "description": "Adv JS Webapp itc230",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taahmed/itc230.git"
+  },
+  "author": "Taher Ahmed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taahmed/itc230/issues"
+  },
+  "homepage": "https://github.com/taahmed/itc230#readme"
+}
