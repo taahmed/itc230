@@ -8,11 +8,10 @@ let students = [
     {sid:125, name: "Aisha", sex:"f", age:19, department:"data analytics"},
     {sid:963, name: "kedi", sex:"f", age:40, department:"web design"},   
 ];
-//return all students lists
+
 exports.getAll = () => {
     return students;
 };
 
 
-//console.log(students)
-//console.log(students[1])*/
+

@@ -1,11 +1,11 @@
 var http = require("http");
 
 const students = require('./data.js');
-//console.log(student.getAll());
+
 var all = students.getAll();
-//console.log(all.length);
+
 http.createServer(function(req,res){
-  //console.log('createServer got request')
+  
   var path = req.url.toLowerCase();
   switch(path) {
     case '/': 
