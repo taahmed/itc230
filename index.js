@@ -1,24 +1,59 @@
-var http = require("http");
+'use strict'
 
-const students = require('./data.js');
+// Application Dependencies
+const http = require("http");
+const musics = require('./data.js');
+const express = require("express");
+const bodyParser = require("body-parser")
+const exphbs = require("express-handlebars"); 
 
-var all = students.getAll();
+// initialize express server
+const app = express();
 
-http.createServer(function(req,res){
-  
-  var path = req.url.toLowerCase();
-  switch(path) {
-    case '/': 
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('This is home page.'+ 'The array length is: ' + all.length); 
-    break;
-    case '/about':
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end('This is about me page. Hello everybody My name is Taher.');
-      break;
-    default:
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.end('404:Page not found.');
-  }
-  
-}).listen(process.env.PORT || 3000);
+// get data
+var all = musics.getAll();
+
+// Configure application
+app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public')); // set location for static files
+app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
+app.engine('handlebars', exphbs({defaultLayout: false}));
+app.set("view engine", "handlebars");
+
+
+// send static file as response
+app.get('/home.html', (request, response) => {
+  response.type('text/html');
+  response.sendFile(__dirname + '/public/home.html');
+});
+
+// send content of 'home' view as HTML response
+app.get('/', (request, response) => {
+  response.render('home', {musics: all});
+});
+
+// send content of 'home' view 
+app.get('/details', (request, response) => {
+  let title = request.query.title;
+  let album = musics.getItem(title);
+  console.log(album);
+  response.render('details', { title: title, album: album });
+});
+
+// send plain text response
+app.get('/about', (request, response) => {
+  response.type('text/plain');
+  response.send('About page');
+});
+
+// define 404 handler - 404 Not Found
+app.use( (request,response) => {
+  response.type('text/plain'); 
+  response.status(404);
+  response.send('404 - Not found');
+});
+
+
+app.listen(app.get('port'), () => {
+  console.log('Express started'); 
+});

@@ -1,0 +1,15 @@
+<html>
+<link rel="stylesheet" href="/css/main.css">
+
+<body>
+<h2>Home</h2>
+<form method="POST" action="/details">
+    <input type="text" title="title" placeholder="title" required maxlength="100">
+    <button>Search</button>
+</form>
+<hr>
+<h3>musics</h3>
+{{#each music}}
+    <li><a href="/detail?title={{title}}">{{title}}</a></li>
+{{/each}}
+</body>

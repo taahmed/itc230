@@ -1,0 +1,15 @@
+
+<h1>Musics Details {{ title }}</h1>
+
+{{#if album}}
+    <h2>title: {{ album.title }}</h2>
+
+    <p>type: {{ album.type }}</p>
+    <p>year: {{ album.year }}</p>
+    <p>publisher: {{ album.publisher }}</p>
+
+{{else}}
+    <p>not found</p>
+{{/if}}
+
+<p><a href="/">Back</a></p>
