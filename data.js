@@ -16,10 +16,32 @@ exports.getItem =(title) => {
     let found = musics.find((album) => {
         return album.title === title;
       });
-      console.log(found);
+      //console.log(found);
     return found;
 };
 //console.log(this.getItem(‘Ahd’))
 
+exports.delete = (title) => {
+    // retain array length for later comparison after array modification
+    const oldLength = musics.length;
+    musics = musics.filter((item) => {
+        return item.title !== title;
+    });
+    // if old & new array lengths differ, item was deleted
+    return {deleted: oldLength !== musics.length, total: musics.length };
+};
 
+exports.add = (newMusic) => {
+    const oldLength = musics.length;
+    // use existing get() method to check if musics already in our list
+    let found = this.getItem(newMusic.title);
+    if (!found) {
+        musics.push(newMusic);
+    }
+    // if old & new array lengths differ, item was added
+    return {added: oldLength !== musics.length, total: musics.length };
+};
+// console.log(this.getAll());
+// console.log(this.add({title:'test'}));
+// console.log(this.getAll());
 
