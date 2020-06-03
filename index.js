@@ -15,12 +15,12 @@ const Music = require("./model/musics");
 const app = express();
 
 // database configuration
-const db = require('./config/keys').mongouri;
+// const db = require('./config/keys').mongouri;
 
 // connect mongo
-mongoose.connect(db)
-  .then(()=>console.log('mongodb connected...'))
-  .catch((err)=> console.log(err));
+// mongoose.connect(db)
+//   .then(()=>console.log('mongodb connected...'))
+//   .catch((err)=> console.log(err));
 
 // get data
 var all = musics.getAll();
@@ -40,29 +40,59 @@ app.get('/home.html', (request, response) => {
 
 // send content of 'home' view as HTML response
 app.get('/', (request, response) => {
-  response.render('home', {musics: all});
+    return Music.find({}).lean()
+    .then((musics) => {
+      console.log(musics);
+      response.render('home', {musics: musics}); 
+    })
+    .catch(err => next(err));
 });
 
 // send content of 'home' view 
 app.get('/details', (request, response) => {
-  let title = request.query.title;
-  let album = musics.getItem(title);
-  console.log(album);
-  response.render('details', { title: title, album: album });
+  let title = request.query.title; 
+// return a single record
+  Music.findOne({title: title }).lean()
+  .then((music) => {
+    response.render('details', {music: music });
+    console.log(music);
+  })
+  .catch(err => next(err));
 });
 
 // delete route
 app.get('/delete', (request, response) => {
   let title = request.query.title;
+  console.log(title);
   Music.deleteOne({title:title}).lean()
   .then((musics) => {
-    console.log(musics);
-     response.send(musics)
-    //response.render('delete', { title: title, album: album });
+    console.log(musics);  
+    response.send(musics)   
   })
-  .catch(err => console.log(err));
-     
+  .catch(err => console.log(err));    
 });
+// delete route
+app.get('/api/delete', (request, response) => {
+  let title = request.query.title;
+  console.log(title);
+  Music.deleteOne({'title':title}).lean()
+  .then((musics) => {
+    console.log(musics);
+    response.json(musics)  
+     //response.send(musics)   
+  })
+  .catch(err => console.log(err));    
+});
+
+// insert or update a single record
+app.post('/api/add', (request, response) => {
+  const newMusic= request.body;
+  Music.update({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
+    if (err) return next(err);
+    response.json(result)
+    console.log(result);
+  });
+  });
 
 // send plain text response
 app.get('/about', (request, response) => {
