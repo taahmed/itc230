@@ -71,28 +71,6 @@ app.get('/delete', (request, response) => {
   })
   .catch(err => console.log(err));    
 });
-// delete route
-app.get('/api/delete', (request, response) => {
-  let title = request.query.title;
-  console.log(title);
-  Music.deleteOne({'title':title}).lean()
-  .then((musics) => {
-    console.log(musics);
-    response.json(musics)  
-     //response.send(musics)   
-  })
-  .catch(err => console.log(err));    
-});
-
-// insert or update a single record
-app.post('/api/add', (request, response) => {
-  const newMusic= request.body;
-  Music.update({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
-    if (err) return next(err);
-    response.json(result)
-    console.log(result);
-  });
-  });
 
 // send plain text response
 app.get('/about', (request, response) => {
