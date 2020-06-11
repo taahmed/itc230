@@ -14,14 +14,6 @@ const Music = require("./model/musics");
 // initialize express server
 const app = express();
 
-// database configuration
-// const db = require('./config/keys').mongouri;
-
-// connect mongo
-// mongoose.connect(db)
-//   .then(()=>console.log('mongodb connected...'))
-//   .catch((err)=> console.log(err));
-
 // get data
 var all = musics.getAll();
 
@@ -40,17 +32,18 @@ app.get('/home.html', (request, response) => {
 
 // send content of 'home' view as HTML response
 app.get('/', (request, response) => {
-    return Music.find({}).lean()
-    .then((musics) => {
-      console.log(musics);
-      response.render('home', {musics: musics}); 
-    })
-    .catch(err => next(err));
+  return Music.find({}).lean()
+  .then((musics) => {
+    console.log(musics);
+    response.render('home', {musics: musics}); 
+  })
+  .catch(err => next(err));
 });
 
 // send content of 'home' view 
 app.get('/details', (request, response) => {
   let title = request.query.title; 
+
 // return a single record
   Music.findOne({title: title }).lean()
   .then((music) => {
@@ -61,17 +54,28 @@ app.get('/details', (request, response) => {
 });
 
 // delete route
-app.get('/delete', (request, response) => {
+app.get('/api/delete', (request, response) => {
   let title = request.query.title;
   console.log(title);
-  Music.deleteOne({title:title}).lean()
+  Music.deleteOne({'title':title}).lean()
   .then((musics) => {
-    console.log(musics);  
-    response.send(musics)   
+    console.log(musics);
+    response.json(musics)  
+       
   })
   .catch(err => console.log(err));    
 });
 
+// insert or update a single record
+app.post('/api/add', (request, response) => {
+  const newMusic= request.body;
+  Music.updateOne({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
+    if (err) return next(err);
+    response.json(result);
+    // response.send(result);
+    console.log(result);
+  }); //.catch(err=> next(err));
+  });
 // send plain text response
 app.get('/about', (request, response) => {
   response.type('text/plain');
