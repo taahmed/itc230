@@ -35,12 +35,20 @@ app.get('/', (request, response) => {
   return Music.find({}).lean()
   .then((musics) => {
     console.log(musics);
-    response.render('homereact', {items: JSON.stringify(musics)});
-    //response.render('home', {musics: musics}); 
+    /*response.render('homereact', {items: JSON.stringify(musics)});*/
+    response.render('home', {musics: musics}); 
   })
   .catch(err => next(err));
 });
 
+app.get('/api/musics', (request, response) => {
+  return Music.find({}).lean()
+  .then((musics) => {
+    console.log(musics);
+    response.json(musics)
+  })
+  .catch(err => console.log(err));
+});
 // send content of 'home' view 
 app.get('/details', (request, response) => {
   let title = request.query.title; 
@@ -54,6 +62,28 @@ app.get('/details', (request, response) => {
   .catch(err => next(err));
 });
 
+//
+app.get('api/musics/:title', (request, response) => {
+  let title = request.params.title;
+    //let music = all[index];
+  Music.findOne({"title":title}).lean()
+  .then((music) => {
+    response.json(music)
+    console.log(music);
+  })
+  .catch(err => console.log(err));
+  })
+
+// insert or update a single record
+app.post('/api/add', (request, response) => {
+  const newMusic= request.body;
+  Music.updateOne({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
+    if (err) return next(err);
+    response.json(result);
+    console.log(result);
+  }); 
+  });
+  
 // delete route
 app.get('/api/delete', (request, response) => {
   let title = request.query.title;
@@ -67,16 +97,7 @@ app.get('/api/delete', (request, response) => {
   .catch(err => console.log(err));    
 });
 
-// insert or update a single record
-app.post('/api/add', (request, response) => {
-  const newMusic= request.body;
-  Music.updateOne({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
-    if (err) return next(err);
-    response.json(result);
-    // response.send(result);
-    console.log(result);
-  }); //.catch(err=> next(err));
-  });
+
 // send plain text response
 app.get('/about', (request, response) => {
   response.type('text/plain');
