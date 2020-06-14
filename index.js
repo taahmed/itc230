@@ -35,7 +35,8 @@ app.get('/', (request, response) => {
   return Music.find({}).lean()
   .then((musics) => {
     console.log(musics);
-    response.render('home', {musics: musics}); 
+    response.render('homereact', {items: JSON.stringify(musics)});
+    //response.render('home', {musics: musics}); 
   })
   .catch(err => next(err));
 });
