@@ -35,8 +35,8 @@ app.get('/', (request, response) => {
   return Music.find({}).lean()
   .then((musics) => {
     console.log(musics);
-    /*response.render('homereact', {items: JSON.stringify(musics)});*/
-    response.render('home', {musics: musics}); 
+    response.render('homereact', {items: JSON.stringify(musics)});
+    //response.render('home', {musics: musics}); 
   })
   .catch(err => next(err));
 });
@@ -83,7 +83,7 @@ app.post('/api/add', (request, response) => {
     console.log(result);
   }); 
   });
-  
+
 // delete route
 app.get('/api/delete', (request, response) => {
   let title = request.query.title;
@@ -96,7 +96,6 @@ app.get('/api/delete', (request, response) => {
   })
   .catch(err => console.log(err));    
 });
-
 
 // send plain text response
 app.get('/about', (request, response) => {
