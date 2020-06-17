@@ -1,0 +1,122 @@
+<html>
+
+<head>
+  <title>React App Demo</title>
+
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+    const ItemList = (props) => {
+      console.log(props)
+      return <div>
+        <h1>Click One for More Details</h1>
+        <ul>
+        {props.items.map(item => <li onClick={props.clickHandler} key={item.title}>{item.title}</li>)}
+
+      </ul>
+      <hr />
+      </div>
+     
+    }
+    const MusicDetail = (props) => {
+      console.log(props)
+      return <div>
+
+<form>
+   
+    <p>Title : <input type="text" name="title" onChange={props.change} value={props.item.title || ""}/></p>
+    <p>MusicID : <input type="text" name="musicid" onChange={props.change} value={props.item.musicid || ""}/></p>
+    <p>Type : <input type="text" name="type" onChange={props.change} value={props.item.type || ""}/></p>
+    <p>Year: <input type="text" name="year" onChange={props.change} value={props.item.year || ""}/></p>
+    <p>Publisher :  <input type="text" name="publisher" onChange={props.change} value={props.item.publisher || ""}/></p>
+   
+  </form>
+      
+       <button onClick={props.clearForm}> Clear</button> 
+       <button onClick={props.deleteMusic}> Delete</button>  
+       <button onClick={props.onSave}> Save</button> 
+
+      </div>
+    }
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        // Set initial state using data from server application
+        this.state = {
+        items: {{{items}}},
+        currentMusic: {},// current selected item -- What Music do u want to see
+      }
+    this.handleClick = this.handleClick.bind(this);
+    this.clearForm = this.clearForm.bind(this);
+    this.deleteForm = this.deleteMusic.bind(this);
+    this.onSave = this.onSave.bind(this);
+    this.onChange = this.onChange.bind(this);
+
+  }
+    clearForm(e){
+        this.setState({
+        currentMusic: { }
+      }); 
+    }
+   onChange(e){
+     let input = e.target
+        console.log(input) 
+        let newMusic= this.state.currentMusic;
+        newMusic[input.name] = input.value
+        this.setState({
+        currentMusic: newMusic
+      });
+    }
+    handleClick(e) {
+      let clicked = e.target.innerText
+      let newMusic = this.state.items.find((item) => {
+        return item.title == clicked
+      })
+      this.setState({
+        currentMusic: newMusic
+      }); 
+    }
+    
+    // deletes a music from MongoDB
+    deleteMusic(e){
+      let deleteMusic= this.state.currentMusic.title;
+      fetch("api/delete?title="+this.state.deleteMusic.title)
+       .then((response) => {
+         return response.json();
+        }) 
+        .then((result) => {
+            console.log(result);
+            
+        })
+        .catch(err => console.log(err))
+    }
+    // 
+    onSave(){
+      let newMusic = this.state.currentMusic;
+         if (!newMusic.title ){
+            return;
+         }
+      }
+    render() {
+      // render app UI elements
+      return (
+        <div>
+          <ItemList items={this.state.items} clickHandler={this.handleClick} />
+          <MusicDetail item={this.state.currentMusic} clearForm={this.clearForm} deleteMusic={this.deleteMusic} onSave={this.onSave} change={this.onChange}/>
+          
+        </div>
+      );
+    }
+    }
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+
+</html>

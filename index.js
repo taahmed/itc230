@@ -23,6 +23,7 @@ app.use(express.static(__dirname + '/public')); // set location for static files
 app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
 app.engine('handlebars', exphbs({defaultLayout: false}));
 app.set("view engine", "handlebars");
+app.use(bodyParser.json());
 
 // send static file as response
 app.get('/home.html', (request, response) => {
@@ -35,7 +36,7 @@ app.get('/', (request, response) => {
   return Music.find({}).lean()
   .then((musics) => {
     console.log(musics);
-    response.render('homereact', {items: JSON.stringify(musics)});
+    response.render('home_react', {items: JSON.stringify(musics)});
     //response.render('home', {musics: musics}); 
   })
   .catch(err => next(err));
