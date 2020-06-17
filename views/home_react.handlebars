@@ -106,6 +106,28 @@
          if (!newMusic.title ){
             return;
          }
+         fetch("/api/add/", {
+          method: "POST",
+        	headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newMusic)
+        }).then(response => response.json())
+        	.then((json) => {
+          let newData;
+          if (!newMusic.title) { // add new item to array
+            newData = this.state.items;
+            newMusic.title = json.title;
+            newData.push(newMusic);
+          } else { // update existing item 
+            newData = this.state.items.map((item) => {
+              if (item.title === newMusic.title) {
+                item = newMusic; 
+              }
+              return item;
+            });          
+          }
+          // Update state with new array
+          this.setState({items: newData});
+        });
       }
     render() {
       // render app UI elements
