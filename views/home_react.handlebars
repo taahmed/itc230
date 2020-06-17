@@ -23,7 +23,7 @@
         {props.items.map(item => <li onClick={props.clickHandler} key={item.title}>{item.title}</li>)}
 
       </ul>
-      <hr />
+      <hr /> 
       </div>
      
     }
@@ -41,8 +41,8 @@
    
   </form>
       
-       <button onClick={props.clearForm}> Clear</button> 
-       <button onClick={props.deleteMusic}> Delete</button>  
+       <button onClick={props.clearForm}> Clear</button> <br/>
+       <button onClick={props.deleteMusic}> Delete</button>  <br/>
        <button onClick={props.onSave}> Save</button> 
 
       </div>
@@ -80,6 +80,7 @@
       let clicked = e.target.innerText
       let newMusic = this.state.items.find((item) => {
         return item.title == clicked
+        
       })
       this.setState({
         currentMusic: newMusic
@@ -89,7 +90,6 @@
     // deletes a music from MongoDB
     deleteMusic(e){
       let deleteMusic= this.state.currentMusic.title;
-      //console.log("test",deleteMusic)
       fetch("api/delete?title="+deleteMusic)
        .then((response) => {
          return response.json();
