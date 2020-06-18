@@ -78,10 +78,12 @@ app.get('api/musics/:title', (request, response) => {
 // insert or update a single record
 app.post('/api/add', (request, response) => {
   const newMusic= request.body;
+  delete newMusic["_id"]
   Music.updateOne({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
-    if (err) return next(err);
+    if (err) console.log(err); 
+    console.log(result);     
     response.json(result);
-    console.log(result);
+    
   }); 
   });
 
@@ -93,6 +95,7 @@ app.get('/api/delete', (request, response) => {
   .then((musics) => {
     console.log(musics);
     response.json(musics)  
+    
        
   })
   .catch(err => console.log(err));    
